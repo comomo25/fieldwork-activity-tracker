@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tar files
+*.tar.gz
+
+# shell scripts for repo creation
+create-github-repo.sh

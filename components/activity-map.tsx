@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Activity } from "@/lib/types";
 import { formatDate, formatDistance } from "@/lib/utils";
+import "leaflet/dist/leaflet.css";
 
 interface ActivityMapProps {
   activities: Activity[];
@@ -18,7 +19,6 @@ export function ActivityMap({ activities, onActivityClick }: ActivityMapProps) {
 
     // Dynamic import for Leaflet (client-side only)
     import("leaflet").then((L) => {
-      import("leaflet/dist/leaflet.css");
       
       // マーカーアイコンの設定
       delete (L.Icon.Default.prototype as any)._getIconUrl;

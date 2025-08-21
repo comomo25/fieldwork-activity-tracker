@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { Activity } from "@/lib/types";
 import { formatDate, formatDistance } from "@/lib/utils";
+import "leaflet/dist/leaflet.css";
 
 interface MapComponentProps {
   activities: Activity[];
@@ -30,7 +31,6 @@ export function MapComponent({ activities, onActivityClick }: MapComponentProps)
         }
 
         const L = (await import("leaflet")).default;
-        await import("leaflet/dist/leaflet.css");
         
         if (!isMounted || !mapContainer.current) return;
         
