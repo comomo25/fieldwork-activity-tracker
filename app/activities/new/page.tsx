@@ -97,14 +97,13 @@ export default function NewActivityPage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) {
       alert("タイトルを入力してください");
       return;
     }
 
-    const newActivity: Activity = {
-      id: Date.now().toString(),
+    const newActivity: Omit<Activity, 'id'> = {
       title: title.trim(),
       date: parseResult?.startTime || new Date(),
       duration: parseResult?.duration || 0,
@@ -119,7 +118,7 @@ export default function NewActivityPage() {
       updatedAt: new Date(),
     };
 
-    addActivity(newActivity);
+    await addActivity(newActivity);
     router.push("/");
   };
 

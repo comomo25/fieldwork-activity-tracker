@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useActivityStore } from "@/lib/store";
 import { ActivityList } from "@/components/activity-list";
 import { ActivityMapDynamic } from "@/components/activity-map-dynamic";
@@ -18,10 +18,17 @@ export default function HomePage() {
     setFilter, 
     setViewMode, 
     getFilteredActivities,
-    deleteActivity 
+    deleteActivity,
+    fetchActivities,
+    isLoading,
+    error
   } = useActivityStore();
   
   const filteredActivities = getFilteredActivities();
+
+  useEffect(() => {
+    fetchActivities();
+  }, [fetchActivities]);
 
   const handleEdit = (id: string) => {
     router.push(`/activities/${id}/edit`);
@@ -37,6 +44,14 @@ export default function HomePage() {
     router.push(`/activities/${id}`);
   };
 
+  if (error) {
+    return (
+      <div className="container mx-auto py-8 px-4">
+        <div className="text-red-500">エラー: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="flex justify-between items-center mb-8">
@@ -46,6 +61,8 @@ export default function HomePage() {
           新規作成
         </Button>
       </div>
+
+      {isLoading && <div className="text-center py-4">読み込み中...</div>}
 
       <ActivityFilterComponent filter={filter} onFilterChange={setFilter} />
 
@@ -65,10 +82,12 @@ export default function HomePage() {
           </TabsContent>
           
           <TabsContent value="map" className="mt-6">
-            <ActivityMapDynamic 
-              activities={filteredActivities}
-              onActivityClick={handleActivityClick}
-            />
+            <div className="w-full h-[400px]">
+              <ActivityMapDynamic 
+                activities={filteredActivities}
+                onActivityClick={handleActivityClick}
+              />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

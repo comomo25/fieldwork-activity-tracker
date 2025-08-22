@@ -52,7 +52,7 @@ export default function EditActivityPage() {
     );
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!title.trim()) {
       alert("タイトルを入力してください");
       return;
@@ -66,7 +66,7 @@ export default function EditActivityPage() {
       fieldNotes: fieldNotes.trim(),
     };
 
-    updateActivity(activity.id, updatedActivity);
+    await updateActivity(activity.id, updatedActivity);
     router.push(`/activities/${activity.id}`);
   };
 

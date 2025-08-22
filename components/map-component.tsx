@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { Activity } from "@/lib/types";
 import { formatDate, formatDistance } from "@/lib/utils";
-import "leaflet/dist/leaflet.css";
 
 interface MapComponentProps {
   activities: Activity[];
@@ -25,12 +24,17 @@ export function MapComponent({ activities, onActivityClick }: MapComponentProps)
 
     const initMap = async () => {
       try {
+        console.log("[Map] Starting initialization...");
+        console.log("[Map] Container:", mapContainer.current);
+        
         // Check if container already has a map
         if (mapContainer.current && (mapContainer.current as any)._leaflet_id) {
+          console.log("[Map] Already initialized, skipping");
           return;
         }
 
         const L = (await import("leaflet")).default;
+        console.log("[Map] Leaflet loaded");
         
         if (!isMounted || !mapContainer.current) return;
         
@@ -49,11 +53,13 @@ export function MapComponent({ activities, onActivityClick }: MapComponentProps)
           center: [35.6762, 139.6503],
           zoom: 6,
         });
+        console.log("[Map] Map instance created:", map);
 
         // Add tile layer
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(map);
+        console.log("[Map] Tile layer added");
 
         if (isMounted) {
           mapRef.current = map;
@@ -89,7 +95,8 @@ export function MapComponent({ activities, onActivityClick }: MapComponentProps)
 
   useEffect(() => {
     if (!mapRef.current || !leafletRef.current) return;
-
+    
+    console.log("[Map] Updating with activities:", activities.length);
     const L = leafletRef.current;
     const map = mapRef.current;
 
@@ -160,8 +167,8 @@ export function MapComponent({ activities, onActivityClick }: MapComponentProps)
   }, [activities, onActivityClick]);
 
   return (
-    <div className="w-full h-full relative">
-      <div ref={mapContainer} className="w-full h-full rounded-lg" />
+    <div className="w-full h-[400px] relative">
+      <div ref={mapContainer} className="w-full h-full rounded-lg" style={{ minHeight: '400px' }} />
     </div>
   );
 }

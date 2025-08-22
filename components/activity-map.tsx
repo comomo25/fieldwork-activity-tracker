@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { Activity } from "@/lib/types";
 import { formatDate, formatDistance } from "@/lib/utils";
-import "leaflet/dist/leaflet.css";
 
 interface ActivityMapProps {
   activities: Activity[];
