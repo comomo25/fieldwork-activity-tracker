@@ -274,22 +274,17 @@ export default function NewActivityPage() {
 
                 <div className="mt-4">
                   <MapComponent 
-                    activities={[{
-                      id: "preview",
-                      title: "Preview",
-                      date: new Date(),
-                      duration: 0,
-                      distance: 0,
-                      elevationGain: 0,
-                      weather: "晴れ",
-                      participants: [],
-                      gpxData,
-                      photos: [],
-                      createdAt: new Date(),
-                      updatedAt: new Date(),
-                    }]} 
+                    gpxData={gpxData ? {
+                      tracks: [{
+                        points: gpxData.map((p: any) => ({
+                          lat: p.lat,
+                          lng: p.lng || p.lon,
+                          elevation: p.elevation || p.ele,
+                          time: p.time
+                        }))
+                      }]
+                    } : undefined}
                     height="256px"
-                    showControls={false}
                   />
                 </div>
               </div>

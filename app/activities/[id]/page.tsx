@@ -130,7 +130,7 @@ export default function ActivityDetailWithSidebarPage() {
         Math.abs((p.distance || 0) - distance) < 100 // 100m以内の点を探す
       );
       if (point) {
-        setHoveredPoint({ lat: point.lat, lng: point.lng || point.lon });
+        setHoveredPoint({ lat: point.lat, lng: point.lng });
       }
     }
   };
@@ -258,7 +258,7 @@ export default function ActivityDetailWithSidebarPage() {
                       tracks: [{
                         points: activity.gpxData.map((p: any) => ({
                           lat: p.lat,
-                          lng: p.lng || p.lon,
+                          lng: p.lng,
                           elevation: p.elevation || p.ele,
                           time: p.time
                         }))
@@ -277,7 +277,7 @@ export default function ActivityDetailWithSidebarPage() {
                       tracks: [{
                         points: activity.gpxData.map((p: any) => ({
                           lat: p.lat,
-                          lng: p.lng || p.lon,
+                          lng: p.lng,
                           elevation: p.elevation || p.ele,
                           time: p.time
                         }))

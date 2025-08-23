@@ -262,16 +262,17 @@ export default function EditActivityPage() {
             </CardHeader>
             <CardContent>
               <MapComponent 
-                activities={[{
-                  ...activity,
-                  title: title || activity.title,
-                  weather: weather as any,
-                  participants: participants.split(",").map(p => p.trim()).filter(p => p),
-                  photos,
-                  fieldNotes,
-                }]} 
+                gpxData={activity.gpxData ? {
+                  tracks: [{
+                    points: activity.gpxData.map((p: any) => ({
+                      lat: p.lat,
+                      lng: p.lng || p.lon,
+                      elevation: p.elevation || p.ele,
+                      time: p.time
+                    }))
+                  }]
+                } : undefined}
                 height="600px"
-                showControls={false}
               />
             </CardContent>
           </Card>
