@@ -1,0 +1,6 @@
+34c0004 fix: 編集ページの型エラーを修正（fieldNotes -> fieldNote）
+101e3bd fix: 型エラーを修正（fieldNotes -> fieldNote）
+8e78630 feat: 地図機能の大幅改善とGoogle Maps API統合
+8d7d0ed feat: Firebase integration and UI improvements
+7e216a5 fix: Leaflet CSS import error for Vercel deployment
+48c88a5 Initial commit: Fieldwork Activity Tracker
