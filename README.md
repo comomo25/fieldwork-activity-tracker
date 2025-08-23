@@ -1,5 +1,7 @@
 # Fieldwork Activity Tracker
 
+[![Vercel Deployment](https://github.com/comomo25/fieldwork-activity-tracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/comomo25/fieldwork-activity-tracker/actions/workflows/deploy.yml)
+
 フィールドワークや山行活動を記録・管理するWebアプリケーション
 
 ## 🚀 機能
