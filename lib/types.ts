@@ -27,7 +27,7 @@ export interface Activity {
   participants: string[];
   gpxData: GPXPoint[];
   photos: Photo[];
-  fieldNotes?: string;
+  fieldNote?: string;
   createdAt: Date;
   updatedAt: Date;
 }

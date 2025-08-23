@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useActivityStore } from "@/lib/store";
 import { ActivityList } from "@/components/activity-list";
-import { ActivityMapDynamic } from "@/components/activity-map-dynamic";
+import MapSwitcher from "@/components/map-switcher";
 import { ActivityFilterComponent } from "@/components/activity-filter";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -82,10 +82,11 @@ export default function HomePage() {
           </TabsContent>
           
           <TabsContent value="map" className="mt-6">
-            <div className="w-full h-[400px]">
-              <ActivityMapDynamic 
-                activities={filteredActivities}
-                onActivityClick={handleActivityClick}
+            <div className="w-full">
+              <MapSwitcher
+                gpxData={filteredActivities[0]?.gpxData}
+                height="600px"
+                defaultProvider="leaflet"
               />
             </div>
           </TabsContent>

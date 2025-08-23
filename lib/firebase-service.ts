@@ -20,20 +20,39 @@ const COLLECTION_NAME = 'activities';
 const activityToFirestore = (activity: Omit<Activity, 'id'>) => {
   return {
     ...activity,
-    date: Timestamp.fromDate(activity.date),
-    createdAt: Timestamp.fromDate(activity.createdAt),
-    updatedAt: Timestamp.fromDate(activity.updatedAt),
+    date: activity.date instanceof Date ? Timestamp.fromDate(activity.date) : activity.date,
+    createdAt: activity.createdAt instanceof Date ? Timestamp.fromDate(activity.createdAt) : activity.createdAt,
+    updatedAt: activity.updatedAt instanceof Date ? Timestamp.fromDate(activity.updatedAt) : activity.updatedAt,
   };
 };
 
 // Convert Firestore document to Activity
 const firestoreToActivity = (id: string, data: any): Activity => {
+  // Convert GPX data time fields if present and ensure numeric coordinates
+  const gpxData = data.gpxData?.map ? data.gpxData.map((point: any) => {
+    // Ensure lat/lng are proper numbers
+    const lat = typeof point.lat === 'number' ? point.lat : parseFloat(point.lat);
+    const lng = typeof point.lng === 'number' ? point.lng : parseFloat(point.lng);
+    const elevation = point.elevation ? (typeof point.elevation === 'number' ? point.elevation : parseFloat(point.elevation)) : undefined;
+    
+    // Convert Firestore Timestamp to Date
+    const time = point.time?.toDate ? point.time.toDate() : (point.time ? new Date(point.time) : undefined);
+    
+    return {
+      lat: isNaN(lat) ? 0 : lat,
+      lng: isNaN(lng) ? 0 : lng,
+      elevation: elevation && !isNaN(elevation) ? elevation : undefined,
+      time
+    };
+  }) : (data.gpxData || []);
+
   return {
     ...data,
     id,
-    date: data.date.toDate(),
-    createdAt: data.createdAt.toDate(),
-    updatedAt: data.updatedAt.toDate(),
+    date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
+    createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
+    updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : new Date(data.updatedAt),
+    gpxData,
   };
 };
 

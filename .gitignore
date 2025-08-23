@@ -40,3 +40,28 @@ next-env.d.ts
 
 # shell scripts for repo creation
 create-github-repo.sh
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archive (experimental/old files)
+archive/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.backup
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Environment
+.env

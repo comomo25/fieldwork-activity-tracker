@@ -8,7 +8,12 @@ import { parseGPX, generateDummyGPX } from "@/lib/gpx-parser";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ActivityMapDynamic } from "@/components/activity-map-dynamic";
+import dynamic from 'next/dynamic';
+
+const MapComponent = dynamic(
+  () => import('@/components/leaflet-map-fixed'),
+  { ssr: false }
+);
 import { weatherOptions } from "@/lib/dummy-data";
 import { 
   formatDistance, 
@@ -75,8 +80,24 @@ export default function NewActivityPage() {
     try {
       const content = await file.text();
       const result = parseGPX(content);
-      setGpxData(result.points);
-      setParseResult(result);
+      console.log("GPX解析結果:", result);
+      
+      if (result && result.points && result.points.length > 0) {
+        setGpxData(result.points);
+        setParseResult(result);
+      } else {
+        // ポイントがない場合でも、基本情報があれば続行可能にする
+        setParseResult({
+          ...result,
+          points: [],
+          distance: result.distance || 0,
+          duration: result.duration || 0,
+          elevationGain: result.elevationGain || 0,
+          startTime: result.startTime || new Date()
+        });
+        setGpxData([]);
+        alert("GPXファイルから軌跡データが読み取れませんでしたが、続行できます");
+      }
     } catch (error) {
       console.error("GPX解析エラー:", error);
       alert("GPXファイルの解析に失敗しました");
@@ -86,14 +107,19 @@ export default function NewActivityPage() {
   const handleUseDummyGPX = () => {
     const dummyContent = generateDummyGPX();
     const result = parseGPX(dummyContent);
+    console.log("ダミーGPX解析結果:", result);
     setGpxData(result.points);
     setParseResult(result);
     setGpxFile(new File([dummyContent], "dummy.gpx", { type: "application/gpx+xml" }));
+    console.log("parseResult設定完了:", result);
   };
 
   const handleNextStep = () => {
-    if (step === 1 && gpxData.length > 0) {
+    // parseResultがあるか、gpxDataがあるかを確認
+    if (step === 1 && (parseResult || gpxData.length > 0)) {
       setStep(2);
+    } else if (step === 1) {
+      alert("GPXファイルをアップロードするか、ダミーGPXを使用してください");
     }
   };
 
@@ -237,28 +263,46 @@ export default function NewActivityPage() {
                   </div>
                 </div>
 
-                <div className="h-64">
-                  <ActivityMapDynamic activities={[{
-                    id: "preview",
-                    title: "Preview",
-                    date: new Date(),
-                    duration: 0,
-                    distance: 0,
-                    elevationGain: 0,
-                    weather: "晴れ",
-                    participants: [],
-                    gpxData,
-                    photos: [],
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  }]} />
-                </div>
-
                 <Button
-                  className="w-full"
+                  className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                  size="lg"
+                  onClick={handleNextStep}
+                  disabled={!parseResult && gpxData.length === 0}
+                >
+                  次へ（情報入力へ）→
+                </Button>
+
+                <div className="mt-4">
+                  <MapComponent 
+                    activities={[{
+                      id: "preview",
+                      title: "Preview",
+                      date: new Date(),
+                      duration: 0,
+                      distance: 0,
+                      elevationGain: 0,
+                      weather: "晴れ",
+                      participants: [],
+                      gpxData,
+                      photos: [],
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                    }]} 
+                    height="256px"
+                    showControls={false}
+                  />
+                </div>
+              </div>
+            )}
+            {/* 次へボタンを常に表示（条件付き） */}
+            {parseResult && (
+              <div className="mt-6">
+                <Button
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                  size="lg"
                   onClick={handleNextStep}
                 >
-                  次へ
+                  次へ（情報入力へ）→
                 </Button>
               </div>
             )}
@@ -359,8 +403,8 @@ export default function NewActivityPage() {
                 <CardTitle>軌跡プレビュー</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-96">
-                  <ActivityMapDynamic activities={[{
+                <MapComponent 
+                  activities={[{
                     id: "preview",
                     title: title || "Preview",
                     date: parseResult?.startTime || new Date(),
@@ -374,8 +418,10 @@ export default function NewActivityPage() {
                     fieldNotes,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                  }]} />
-                </div>
+                  }]} 
+                  height="384px"
+                  showControls={false}
+                />
               </CardContent>
             </Card>
           </div>

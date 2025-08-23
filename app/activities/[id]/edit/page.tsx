@@ -7,7 +7,12 @@ import { Activity, Photo } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ActivityMapDynamic } from "@/components/activity-map-dynamic";
+import dynamic from 'next/dynamic';
+
+const MapComponent = dynamic(
+  () => import('@/components/leaflet-map-fixed'),
+  { ssr: false }
+);
 import { weatherOptions, allParticipants } from "@/lib/dummy-data";
 import { 
   formatDistance, 
@@ -256,16 +261,18 @@ export default function EditActivityPage() {
               <CardTitle>軌跡プレビュー</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-[600px]">
-                <ActivityMapDynamic activities={[{
+              <MapComponent 
+                activities={[{
                   ...activity,
                   title: title || activity.title,
                   weather: weather as any,
                   participants: participants.split(",").map(p => p.trim()).filter(p => p),
                   photos,
                   fieldNotes,
-                }]} />
-              </div>
+                }]} 
+                height="600px"
+                showControls={false}
+              />
             </CardContent>
           </Card>
         </div>
