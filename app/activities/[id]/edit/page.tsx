@@ -42,7 +42,7 @@ export default function EditActivityPage() {
       setTitle(found.title);
       setWeather(found.weather);
       setParticipants(found.participants.join(", "));
-      setFieldNotes(found.fieldNotes || "");
+      setFieldNotes(found.fieldNote || "");
       setPhotos(found.photos);
     } else {
       router.push("/");
