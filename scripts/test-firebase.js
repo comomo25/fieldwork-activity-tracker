@@ -25,7 +25,7 @@ async function testFirebase() {
       elevationGain: 150,
       weather: "sunny",
       participants: ["田中", "佐藤"],
-      fieldNotes: "Firebase接続テスト",
+      fieldNote: "Firebase接続テスト",
       gpxData: [],
       photos: [],
       createdAt: new Date(),

@@ -27,7 +27,7 @@ async function addSampleData() {
         elevationGain: 450,
         weather: "sunny",
         participants: ["田中", "佐藤", "鈴木"],
-        fieldNotes: "箱根の山道を歩きました。紅葉が美しく、天気も良好でした。",
+        fieldNote: "箱根の山道を歩きました。紅葉が美しく、天気も良好でした。",
         gpxData: [
           { lat: 35.2323, lng: 139.1069, elevation: 723, time: new Date('2024-11-15T09:00:00') },
           { lat: 35.2334, lng: 139.1078, elevation: 745, time: new Date('2024-11-15T09:15:00') },
@@ -47,7 +47,7 @@ async function addSampleData() {
         elevationGain: 320,
         weather: "cloudy",
         participants: ["山田", "伊藤"],
-        fieldNotes: "富士山の麓を歩きました。雲が多かったですが、時折富士山が見えました。",
+        fieldNote: "富士山の麓を歩きました。雲が多かったですが、時折富士山が見えました。",
         gpxData: [
           { lat: 35.3606, lng: 138.7274, elevation: 1200, time: new Date('2024-10-20T08:00:00') },
           { lat: 35.3617, lng: 138.7285, elevation: 1220, time: new Date('2024-10-20T08:20:00') },
@@ -66,7 +66,7 @@ async function addSampleData() {
         elevationGain: 150,
         weather: "sunny",
         participants: ["高橋"],
-        fieldNotes: "鎌倉の古道を散策。歴史的な寺社を巡りながらのフィールドワーク。",
+        fieldNote: "鎌倉の古道を散策。歴史的な寺社を巡りながらのフィールドワーク。",
         gpxData: [
           { lat: 35.3192, lng: 139.5466, elevation: 25, time: new Date('2024-09-05T10:00:00') },
           { lat: 35.3203, lng: 139.5477, elevation: 35, time: new Date('2024-09-05T10:30:00') },

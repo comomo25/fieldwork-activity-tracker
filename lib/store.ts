@@ -108,7 +108,7 @@ export const useActivityStore = create<ActivityStore>((set, get) => ({
       filtered = filtered.filter(
         (a) =>
           a.title.toLowerCase().includes(searchLower) ||
-          a.fieldNotes?.toLowerCase().includes(searchLower)
+          a.fieldNote?.toLowerCase().includes(searchLower)
       );
     }
 

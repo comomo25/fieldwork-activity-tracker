@@ -70,21 +70,23 @@ export default function MapSwitcher({
         </TabsList>
 
         <TabsContent value="leaflet" className="mt-0">
-          <LeafletMap
-            gpxData={gpxData}
-            hoveredPoint={hoveredPoint}
-            onHoverPoint={onHoverPoint}
-            height={height}
-          />
+          <div style={{ height }}>
+            <LeafletMap
+              gpxData={gpxData}
+              hoveredPoint={hoveredPoint}
+              onHoverPoint={onHoverPoint}
+            />
+          </div>
         </TabsContent>
 
         <TabsContent value="google" className="mt-0">
-          <GoogleMap
-            gpxData={gpxData}
-            hoveredPoint={hoveredPoint}
-            onHoverPoint={onHoverPoint}
-            height={height}
-          />
+          <div style={{ height }}>
+            <GoogleMap
+              gpxData={gpxData}
+              hoveredPoint={hoveredPoint}
+              onHoverPoint={onHoverPoint}
+            />
+          </div>
         </TabsContent>
       </Tabs>
     </div>

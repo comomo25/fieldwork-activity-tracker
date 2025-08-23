@@ -139,7 +139,7 @@ export default function NewActivityPage() {
       participants: participants.split(",").map(p => p.trim()).filter(p => p),
       gpxData,
       photos,
-      fieldNotes: fieldNotes.trim(),
+      fieldNote: fieldNotes.trim(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -399,23 +399,17 @@ export default function NewActivityPage() {
               </CardHeader>
               <CardContent>
                 <MapComponent 
-                  activities={[{
-                    id: "preview",
-                    title: title || "Preview",
-                    date: parseResult?.startTime || new Date(),
-                    duration: parseResult?.duration || 0,
-                    distance: parseResult?.distance || 0,
-                    elevationGain: parseResult?.elevationGain || 0,
-                    weather: weather as any,
-                    participants: participants.split(",").map(p => p.trim()).filter(p => p),
-                    gpxData,
-                    photos,
-                    fieldNotes,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                  }]} 
+                  gpxData={gpxData ? {
+                    tracks: [{
+                      points: gpxData.map((p: any) => ({
+                        lat: p.lat,
+                        lng: p.lng || p.lon,
+                        elevation: p.elevation || p.ele,
+                        time: p.time
+                      }))
+                    }]
+                  } : undefined}
                   height="384px"
-                  showControls={false}
                 />
               </CardContent>
             </Card>

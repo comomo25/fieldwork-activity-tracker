@@ -64,9 +64,9 @@ export function ActivityList({ activities, onEdit, onDelete }: ActivityListProps
                 <p className="font-semibold">{activity.participants.length}名</p>
               </div>
             </div>
-            {activity.fieldNotes && (
+            {activity.fieldNote && (
               <p className="mt-4 text-sm text-gray-600 line-clamp-2">
-                {activity.fieldNotes}
+                {activity.fieldNote}
               </p>
             )}
             <div className="mt-4 flex gap-2" onClick={(e) => e.stopPropagation()}>
