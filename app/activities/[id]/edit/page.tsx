@@ -68,7 +68,7 @@ export default function EditActivityPage() {
       weather: weather as any,
       participants: participants.split(",").map(p => p.trim()).filter(p => p),
       photos,
-      fieldNotes: fieldNotes.trim(),
+      fieldNote: fieldNotes.trim(),
     };
 
     await updateActivity(activity.id, updatedActivity);
