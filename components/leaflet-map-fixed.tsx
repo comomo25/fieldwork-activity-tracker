@@ -258,8 +258,8 @@ export default function LeafletMapFixed({
 
   return (
     <div className={`relative ${className}`} style={{ height }}>
-      {/* マップタイプセレクター */}
-      <div className="absolute top-2 right-2 z-[1000] bg-white rounded-lg shadow-md p-1">
+      {/* マップタイプセレクター - ヘッダーの下に配置 */}
+      <div className="absolute top-16 right-4 z-[1000] bg-white rounded-lg shadow-md p-1">
         <select
           value={mapType}
           onChange={(e) => setMapType(e.target.value as typeof mapType)}
