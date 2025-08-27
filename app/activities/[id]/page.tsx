@@ -310,7 +310,13 @@ export default function ActivityDetailPage() {
               {isEditMode ? (
                 <input
                   type="date"
-                  value={editedActivity?.date || ''}
+                  value={
+                    editedActivity?.date 
+                      ? (editedActivity.date instanceof Date 
+                          ? editedActivity.date.toISOString().split('T')[0]
+                          : editedActivity.date)
+                      : ''
+                  }
                   onChange={(e) => handleFieldChange('date', e.target.value)}
                   className="bg-black/20 border border-amber-400/20 rounded px-2 py-1 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:bg-black/30 transition-all"
                 />
