@@ -5,6 +5,9 @@
 /* Leaflet CSS - 地図表示に必須 */
 @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
 
+/* Inter font import - モダンなタイポグラフィ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
 /* 地図コンテナの必須スタイル */
 .leaflet-container {
   width: 100% !important;
@@ -54,7 +57,7 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   height: 100%;
 }
@@ -75,4 +78,212 @@ body {
 /* 地図タイプセレクターのz-index */
 .map-type-selector {
   z-index: 1001 !important;
+}
+
+/* Radix Lime Theme Colors */
+:root {
+  --lime-1: #fcfdf9;
+  --lime-2: #f9fcf3;
+  --lime-3: #f2fae0;
+  --lime-4: #e9f6c7;
+  --lime-5: #dff1a7;
+  --lime-6: #d3e97f;
+  --lime-7: #c2df53;
+  --lime-8: #b1d12a;
+  --lime-9: #8db600;
+  --lime-10: #7da400;
+  --lime-11: #5d7c00;
+  --lime-12: #263209;
+  
+  /* Dark mode Lime */
+  --lime-dark-1: #0d0f08;
+  --lime-dark-2: #131a0b;
+  --lime-dark-3: #1b260f;
+  --lime-dark-4: #243114;
+  --lime-dark-5: #2e3d18;
+  --lime-dark-6: #394a1e;
+  --lime-dark-7: #475823;
+  --lime-dark-8: #5a6a2e;
+  --lime-dark-9: #8db600;
+  --lime-dark-10: #99c513;
+  --lime-dark-11: #c4e64d;
+  --lime-dark-12: #e3f5aa;
+}
+
+/* Modern Glass Morphism Styles - Best Practices */
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px) saturate(200%);
+  -webkit-backdrop-filter: blur(10px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.1),
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.6);
+}
+
+.glass-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 15, 8, 0.8),
+    rgba(19, 26, 11, 0.7)
+  );
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(196, 230, 77, 0.1);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.4),
+    inset 0 0 0 0.5px rgba(196, 230, 77, 0.1);
+}
+
+.glass-card {
+  border-radius: 16px;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(141, 182, 0, 0.05) 0%,
+    rgba(13, 15, 8, 0.85) 100%
+  );
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(141, 182, 0, 0.15);
+}
+
+/* Lime Accent Glass */
+.glass-lime {
+  background: linear-gradient(
+    135deg,
+    rgba(141, 182, 0, 0.1),
+    rgba(141, 182, 0, 0.02)
+  );
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border: 1px solid rgba(141, 182, 0, 0.2);
+  box-shadow: 
+    0 4px 24px 0 rgba(141, 182, 0, 0.08),
+    inset 0 0 0 0.5px rgba(196, 230, 77, 0.2);
+}
+
+.glass-amber {
+  background: linear-gradient(
+    135deg,
+    rgba(251, 191, 36, 0.1),
+    rgba(251, 191, 36, 0.02)
+  );
+  backdrop-filter: blur(10px) saturate(150%);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  border: 1px solid rgba(251, 191, 36, 0.25);
+  box-shadow: 
+    0 4px 24px 0 rgba(251, 191, 36, 0.12),
+    inset 0 0 0 0.5px rgba(251, 191, 36, 0.3);
+}
+
+/* テキストスタイル */
+.text-glow {
+  text-shadow: 0 0 20px rgba(196, 230, 77, 0.5);
+}
+
+.text-lime {
+  color: var(--lime-9);
+}
+
+.text-lime-light {
+  color: var(--lime-dark-11);
+}
+
+/* アニメーション */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fade-in {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out;
+}
+
+/* Lime Button Styles */
+.btn-lime {
+  background: linear-gradient(135deg, var(--lime-9), var(--lime-10));
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(141, 182, 0, 0.3);
+}
+
+.btn-lime:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(141, 182, 0, 0.4);
+}
+
+/* Scaling 105% - Radix style */
+body {
+  font-size: 105%;
+}
+
+/* イルミネーション効果用のアニメーション */
+@keyframes glow-pulse {
+  0%, 100% { 
+    opacity: 0.3;
+    filter: brightness(1);
+  }
+  50% { 
+    opacity: 0.5;
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+/* Leaflet軌跡のイルミネーション効果 */
+.leaflet-interactive.glow-outer {
+  filter: blur(3px) brightness(1.2);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* Amber color for edit mode */
+.text-amber {
+  color: #fbbf24;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.leaflet-interactive.glow-middle {
+  filter: blur(1.5px) brightness(1.3);
+  animation: glow-pulse 2s ease-in-out infinite 0.5s;
+}
+
+.leaflet-interactive.glow-inner {
+  filter: blur(0.5px) brightness(1.4);
+  animation: glow-pulse 2s ease-in-out infinite 1s;
+}
+
+.leaflet-interactive.main-track {
+  filter: drop-shadow(0 0 6px rgba(196, 230, 77, 0.8));
+  animation: shimmer 1.5s ease-in-out infinite;
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { useEffect, useRef, useMemo, memo, useCallback } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,8 +14,9 @@ import {
   ChartOptions,
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
+import { COLORS, ELEVATION_CONFIG, EARTH_RADIUS_KM, DISTANCE_CONFIG } from '@/lib/constants'
 
-// Chart.jsの要素を登録
+// Chart.jsの要素を登録（一度だけ実行）
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,106 +28,129 @@ ChartJS.register(
   Filler
 )
 
-interface ElevationProfileFixedProps {
-  gpxData?: {
-    tracks: Array<{
-      points: Array<{
-        lat: number
-        lng: number
-        elevation?: number
-        time?: Date
-      }>
-    }>
-  }
+interface GPXPoint {
+  lat: number
+  lng: number
+  elevation?: number
+  time?: Date
+}
+
+interface GPXTrack {
+  points: GPXPoint[]
+}
+
+interface GPXData {
+  tracks: GPXTrack[]
+}
+
+interface ElevationProfileOptimizedProps {
+  gpxData?: GPXData
   onHoverPoint?: (lat: number, lng: number, distance: number) => void
   hoveredDistance?: number | null
   height?: string
   className?: string
 }
 
-export default function ElevationProfileFixed({
+// 距離計算関数をメモ化
+const calculateDistance = (point1: GPXPoint, point2: GPXPoint): number => {
+  const dLat = (point2.lat - point1.lat) * Math.PI / 180
+  const dLon = (point2.lng - point1.lng) * Math.PI / 180
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return EARTH_RADIUS_KM * c
+}
+
+// プロファイルデータの処理をメモ化
+const processProfileData = (points: GPXPoint[]) => {
+  const distances: number[] = []
+  const elevations: number[] = []
+  const labels: string[] = []
+  let cumulativeDistance = 0
+
+  points.forEach((point, index) => {
+    if (index > 0) {
+      const distance = calculateDistance(points[index - 1], point)
+      cumulativeDistance += distance
+    }
+    
+    distances.push(cumulativeDistance)
+    elevations.push(point.elevation || 0)
+    labels.push(`${cumulativeDistance.toFixed(DISTANCE_CONFIG.decimalPlaces)}km`)
+  })
+
+  return { distances, elevations, labels, totalDistance: cumulativeDistance }
+}
+
+const ElevationProfileOptimized = memo(({
   gpxData,
   onHoverPoint,
   hoveredDistance,
-  height = '200px',
+  height = ELEVATION_CONFIG.defaultHeight,
   className = ''
-}: ElevationProfileFixedProps) {
+}: ElevationProfileOptimizedProps) => {
   const chartRef = useRef<ChartJS<'line'>>(null)
 
-  // 距離計算関数
-  const calculateDistance = (
-    point1: { lat: number; lng: number },
-    point2: { lat: number; lng: number }
-  ): number => {
-    const R = 6371 // 地球の半径（km）
-    const dLat = (point2.lat - point1.lat) * Math.PI / 180
-    const dLon = (point2.lng - point1.lng) * Math.PI / 180
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(point1.lat * Math.PI / 180) * Math.cos(point2.lat * Math.PI / 180) *
-      Math.sin(dLon/2) * Math.sin(dLon/2)
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-    return R * c
-  }
-
-  // チャートデータの準備
+  // チャートデータの準備（最適化済み）
   const chartData = useMemo(() => {
-    if (!gpxData?.tracks?.[0]?.points || gpxData.tracks[0].points.length === 0) {
+    if (!gpxData?.tracks?.[0]?.points?.length) {
       return {
         labels: [],
         datasets: [{
           label: '標高',
           data: [],
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: COLORS.lime.primary,
+          backgroundColor: `${COLORS.lime.primary}15`,
           fill: true,
-          tension: 0.1,
-          pointRadius: 0,
-          pointHoverRadius: 5,
+          tension: ELEVATION_CONFIG.animation.tension,
+          pointRadius: ELEVATION_CONFIG.animation.pointRadius,
+          pointHoverRadius: ELEVATION_CONFIG.animation.pointHoverRadius,
         }]
       }
     }
 
-    const points = gpxData.tracks[0].points
-    const distances: number[] = []
-    const elevations: number[] = []
-    const labels: string[] = []
-    let cumulativeDistance = 0
-
-    points.forEach((point, index) => {
-      if (index > 0) {
-        const prevPoint = points[index - 1]
-        const distance = calculateDistance(prevPoint, point)
-        cumulativeDistance += distance
-      }
-      
-      distances.push(cumulativeDistance)
-      elevations.push(point.elevation || 0)
-      labels.push(`${cumulativeDistance.toFixed(2)}km`)
-    })
-
+    const { labels, elevations } = processProfileData(gpxData.tracks[0].points)
 
     return {
-      labels: labels,
+      labels,
       datasets: [{
         label: '標高',
         data: elevations,
-        borderColor: 'rgba(141, 182, 0, 1)',
-        backgroundColor: 'rgba(141, 182, 0, 0.15)',
+        borderColor: COLORS.lime.primary,
+        backgroundColor: `${COLORS.lime.primary}26`, // 15% opacity in hex
         fill: true,
-        tension: 0.3,
-        pointRadius: 0,
-        pointHoverRadius: 6,
-        pointBackgroundColor: 'rgba(255, 255, 255, 1)',
-        pointBorderColor: 'rgba(141, 182, 0, 1)',
+        tension: ELEVATION_CONFIG.animation.tension,
+        pointRadius: ELEVATION_CONFIG.animation.pointRadius,
+        pointHoverRadius: ELEVATION_CONFIG.animation.pointHoverRadius,
+        pointBackgroundColor: '#FFFFFF',
+        pointBorderColor: COLORS.lime.primary,
         pointBorderWidth: 2,
-        borderWidth: 2.5,
+        borderWidth: ELEVATION_CONFIG.animation.borderWidth,
       }]
     }
   }, [gpxData])
 
-  // チャートオプション
-  const options: ChartOptions<'line'> = {
+  // ホバーコールバックの最適化
+  const handleHover = useCallback((event: any, activeElements: any[]) => {
+    if (activeElements.length > 0 && onHoverPoint && gpxData?.tracks?.[0]?.points) {
+      const index = activeElements[0].index
+      const point = gpxData.tracks[0].points[index]
+      
+      let distance = 0
+      for (let i = 1; i <= index; i++) {
+        const prev = gpxData.tracks[0].points[i - 1]
+        const curr = gpxData.tracks[0].points[i]
+        distance += calculateDistance(prev, curr)
+      }
+      
+      onHoverPoint(point.lat, point.lng, distance)
+    }
+  }, [gpxData, onHoverPoint])
+
+  // チャートオプション（メモ化）
+  const options: ChartOptions<'line'> = useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -171,23 +195,14 @@ export default function ElevationProfileFixed({
             const index = context[0].dataIndex
             if (!gpxData?.tracks?.[0]?.points) return ''
             
-            let distance = 0
-            for (let i = 1; i <= index; i++) {
-              const prev = gpxData.tracks[0].points[i - 1]
-              const curr = gpxData.tracks[0].points[i]
-              distance += calculateDistance(prev, curr)
-            }
-            return `距離: ${distance.toFixed(2)}km`
+            const { distances } = processProfileData(gpxData.tracks[0].points)
+            return `距離: ${distances[index].toFixed(DISTANCE_CONFIG.decimalPlaces)}km`
           },
-          label: (context) => {
-            return `標高: ${context.parsed.y.toFixed(0)}m`
-          },
+          label: (context) => `標高: ${context.parsed.y.toFixed(0)}m`,
           afterLabel: (context) => {
             const index = context.dataIndex
-            if (!gpxData?.tracks?.[0]?.points?.[index]) return ''
-            
-            const point = gpxData.tracks[0].points[index]
-            if (point.time) {
+            const point = gpxData?.tracks?.[0]?.points?.[index]
+            if (point?.time) {
               const time = new Date(point.time)
               return `時刻: ${time.toLocaleTimeString('ja-JP')}`
             }
@@ -201,7 +216,7 @@ export default function ElevationProfileFixed({
         display: true,
         grid: {
           color: 'rgba(255, 255, 255, 0.05)',
-          drawTicks: false
+          drawBorder: false
         },
         title: {
           display: true,
@@ -218,7 +233,6 @@ export default function ElevationProfileFixed({
             size: 10
           },
           callback: function(value, index) {
-            // ラベルを間引いて表示
             if (index % Math.ceil(this.getLabelForValue(index).length / 10) === 0) {
               const label = this.getLabelForValue(index)
               return label.replace('km', '')
@@ -234,7 +248,7 @@ export default function ElevationProfileFixed({
         display: true,
         grid: {
           color: 'rgba(255, 255, 255, 0.05)',
-          drawTicks: false
+          drawBorder: false
         },
         title: {
           display: true,
@@ -250,31 +264,15 @@ export default function ElevationProfileFixed({
           font: {
             size: 10
           },
-          callback: function(value) {
-            return value + 'm'
-          }
+          callback: (value) => `${value}m`
         }
       }
     },
-    onHover: (event, activeElements) => {
-      if (activeElements.length > 0 && onHoverPoint && gpxData?.tracks?.[0]?.points) {
-        const index = activeElements[0].index
-        const point = gpxData.tracks[0].points[index]
-        
-        let distance = 0
-        for (let i = 1; i <= index; i++) {
-          const prev = gpxData.tracks[0].points[i - 1]
-          const curr = gpxData.tracks[0].points[i]
-          distance += calculateDistance(prev, curr)
-        }
-        
-        onHoverPoint(point.lat, point.lng, distance)
-      }
-    }
-  }
+    onHover: handleHover
+  }), [gpxData, handleHover])
 
   // データがない場合の表示
-  if (!gpxData?.tracks?.[0]?.points || gpxData.tracks[0].points.length === 0) {
+  if (!gpxData?.tracks?.[0]?.points?.length) {
     return (
       <div 
         className={`flex items-center justify-center glass-light rounded-lg ${className}`}
@@ -302,4 +300,8 @@ export default function ElevationProfileFixed({
       />
     </div>
   )
-}
+})
+
+ElevationProfileOptimized.displayName = 'ElevationProfileOptimized'
+
+export default ElevationProfileOptimized

@@ -13,8 +13,11 @@ export interface Photo {
   caption?: string;
   lat?: number;
   lng?: number;
-  takenAt?: Date;
+  takenAt?: string; // ISO 8601形式の日時文字列（Firebaseとの互換性のため）
 }
+
+// ActivityPhotoはPhotoのエイリアス
+export type ActivityPhoto = Photo;
 
 export interface Activity {
   id: string;

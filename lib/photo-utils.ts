@@ -14,12 +14,12 @@ export const handlePhotoUpload = async (files: FileList): Promise<Photo[]> => {
     // Base64に変換
     const base64 = await fileToBase64(file);
     
-    // 写真オブジェクトを作成
+    // 写真オブジェクトを作成（FirebaseはDateオブジェクトを配列内で直接保存できないため、ISO文字列として保存）
     const photo: Photo = {
       id: `photo-${Date.now()}-${i}`,
       url: base64,
       caption: file.name.replace(/\.[^/.]+$/, ''), // 拡張子を除いたファイル名
-      takenAt: new Date(file.lastModified),
+      takenAt: new Date(file.lastModified).toISOString(),
     };
     
     photos.push(photo);
